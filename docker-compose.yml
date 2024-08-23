@@ -1,19 +1,38 @@
 version: '3.8'
 
 services:
-  db:
-    image: mysql:8.0
-    container_name: mysql_db
+  mysql:
+    image: mysql:latest
+    container_name: mysql_container
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: urlshortener
-      MYSQL_USER: user
-      MYSQL_PASSWORD: userpassword
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: my_password
     ports:
       - "3306:3306"
     volumes:
-      - db-data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
+    networks:
+      - my_network
+
+  app:
+    build: .
+    container_name: urlshortener_app
+    ports:
+      - "3100:3100"
+    depends_on:
+      - mysql
+    networks:
+      - my_network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/my_database
+      SPRING_DATASOURCE_USERNAME: my_user
+      SPRING_DATASOURCE_PASSWORD: my_password
+
+networks:
+  my_network:
+    driver: bridge
 
 volumes:
-  db-data:
-
+  mysql_data:
