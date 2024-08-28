@@ -20,7 +20,7 @@ services:
     build: .
     container_name: urlshortener_app
     ports:
-      - "3100:3100"
+      - "3100:8080"
     depends_on:
       - mysql
     networks:
